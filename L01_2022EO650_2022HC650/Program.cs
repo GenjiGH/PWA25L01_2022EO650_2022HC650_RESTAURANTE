@@ -1,8 +1,19 @@
+using Microsoft.EntityFrameworkCore;
+using L01_2022EO650_2022HC650.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+//Inyeccion
+builder.Services.AddDbContext<restauranteContext>(options =>
+options.UseSqlServer(
+    builder.Configuration.GetConnectionString("restauranteDbConnection")
+    )
+);
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
