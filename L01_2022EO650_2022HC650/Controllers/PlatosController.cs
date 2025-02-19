@@ -113,5 +113,33 @@ namespace L01_2022EO650_2022HC650.Controllers
             return Ok(platos);
         }
 
+        [HttpGet]
+        [Route("TopPlatos")]
+        public IActionResult GetTopPlatosMasPedidos()
+        {
+            var topPlatos = _restauranteContext.pedidos
+                                    .GroupBy(p => p.platoId)
+                                    .Select(g => new
+                                    {
+                                        PlatoId = g.Key,
+                                        NombrePlato = _restauranteContext.platos
+                                                        .Where(p => p.platoId == g.Key)
+                                                        .Select(p => p.nombrePlato)
+                                                        .FirstOrDefault(),
+                                        TotalPedidos = g.Count()
+                                    })
+                                    .OrderByDescending(p => p.TotalPedidos)
+                                    .Take(5)
+                                    .ToList();
+
+            if (topPlatos.Count == 0)
+            {
+                return NotFound("No hay pedidos registrados.");
+            }
+
+            return Ok(topPlatos);
+        }
+
+
     }
 }
